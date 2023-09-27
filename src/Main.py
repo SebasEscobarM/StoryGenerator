@@ -24,7 +24,39 @@ def main():
         "Explorar las ruinas de día".replace(" ", "_")
         ]))
     
+    nod_dict = nod.to_dict()
+    keys = list(nod_dict.keys())
+    current_state = keys[0]
 
+    while(True):
+        print("------------Escenario---------- \n", current_state)
+        node_options = nod_dict[current_state]
+        break_flag = False
+        choice = None
+        while(choice == None):
+            options_to_show = [option.value.replace("_"," ") for option in list(node_options.keys())]
+            response = input(options_to_show)
+            if(response.lower() in ["salir","exit"]):
+                break_flag = True
+                break
+            choice = verify_answers(response.replace(" ","_"),node_options)
+            if(choice == None):
+                print("Has escogido una opción no válida\n")
+        if(break_flag):
+            break
+        current_state = node_options[choice.value]
+        if(nod.is_final_state(current_state)):
+            print(current_state)
+            break
+
+
+def verify_answers(response, options):
+    for option in options:
+        print(option)
+        if(response.upper() == option.value.upper()):
+            print("Has escogido ", option.value.replace("_"," "))
+            return option
+    return None
 
 if __name__ == "__main__":
     main()

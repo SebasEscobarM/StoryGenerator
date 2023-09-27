@@ -30,6 +30,17 @@ class Automaton(object):
     
     def to_dict(self):
         return self.automaton.to_dict()
+    
+    def is_final_state(self, state):
+        return self.automaton.is_final_state(state)
+    
+    def is_start_state(self, state):
+        return self.automaton.start_state==state
+    
+    def get_state(self, state_name):
+        for pk in self.states:
+           if (pk.value == state_name):
+                return pk
 
     def initialize_names(self):
         names = {
