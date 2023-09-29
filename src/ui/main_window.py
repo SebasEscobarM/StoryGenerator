@@ -18,4 +18,3 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(692, 469)
         MainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        
