@@ -18,3 +18,144 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(692, 469)
         MainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+
+
+        self.photoA = QtWidgets.QLabel(self.centralwidget)
+        self.photoA.setGeometry(QtCore.QRect(75, 40, 221, 221))
+        self.photoA.setText("")
+
+        self.photoA.setScaledContents(True)
+        self.photoA.setObjectName("photoA")
+
+
+        #photoB
+        self.photoB = QtWidgets.QLabel(self.centralwidget)
+        self.photoB.setGeometry(QtCore.QRect(395, 40, 221, 221))
+        self.photoB.setText("")
+
+        self.photoB.setScaledContents(True)
+        self.photoB.setObjectName("photoB")
+        self.label_A = QtWidgets.QLabel(self.centralwidget)
+        self.label_A.setGeometry(QtCore.QRect(40, 280, 291, 31))
+        self.label_A.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.label_A.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.label_A.setObjectName("label_A")
+        self.label_B = QtWidgets.QLabel(self.centralwidget)
+        self.label_B.setGeometry(QtCore.QRect(360, 280, 291, 31))
+        self.label_B.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.label_B.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.label_B.setMidLineWidth(0)
+        self.label_B.setObjectName("label_B")
+        self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
+        self.textEdit.setGeometry(QtCore.QRect(230, 330, 241, 41))
+        self.textEdit.setToolTip("")
+        self.textEdit.setAccessibleName("")
+        self.textEdit.setAccessibleDescription("")
+        self.textEdit.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.textEdit.setObjectName("textEdit")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(40, 10, 611, 20))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label.setFont(font)
+        self.label.setAutoFillBackground(False)
+        self.label.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setObjectName("label")
+
+        #Confirmation Button
+        self.confirmationButton = QtWidgets.QPushButton(self.centralwidget)
+        self.confirmationButton.setGeometry(QtCore.QRect(294, 380, 111, 41))
+        self.confirmationButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.confirmationButton.setObjectName("confirmationButton")
+
+        
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 692, 21))
+        self.menubar.setObjectName("menubar")
+        self.menuOptions = QtWidgets.QMenu(self.menubar)
+        self.menuOptions.setObjectName("menuOptions")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+        self.menubar.addAction(self.menuOptions.menuAction())
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Stories Generator"))
+        self.label_A.setText(_translate("MainWindow", "Option A text of the story"))
+        self.label_B.setText(_translate("MainWindow", "Option B text of the story"))
+        self.label.setText(_translate("MainWindow", "State Name"))
+        self.confirmationButton.setText(_translate("MainWindow", "Confirmar"))
+        self.menuOptions.setTitle(_translate("MainWindow", "Options"))
+
+    def set_label_A(self, text):
+        self.label_A.setText(text)
+    
+    def set_label_B(self, text):
+        self.label_B.setText(text)
+
+    def get_label_A(self):
+        return self.label_A.text()
+
+    def get_label_B(self):
+        return self.label_B.text()
+
+    def get_answer(self):
+        return self.textEdit.toPlainText()
+    
+    def set_answer(self, text):
+        self.textEdit.setPlainText(text)
+    
+    def set_current_state(self, text):
+        self.label.setText(text)
+    
+    def get_current_state(self):
+        return self.label.text()
+    
+    def set_photo_A(self, image_url):
+        response = requests.get(image_url)
+        image_data = BytesIO(response.content)
+        # Crear un QPixmap desde los datos de la imagen
+        pixmap = QtGui.QPixmap()
+        pixmap.loadFromData(image_data.getvalue())
+        self.photoA.setPixmap(pixmap)
+
+    def set_photo_B(self, image_url):
+        response = requests.get(image_url)
+        image_data = BytesIO(response.content)
+        # Crear un QPixmap desde los datos de la imagen
+        pixmap = QtGui.QPixmap()
+        pixmap.loadFromData(image_data.getvalue())
+        self.photoB.setPixmap(pixmap)
+
+
+    
+
+class NotificationDialog(QtWidgets.QDialog):
+    def __init__(self, message):
+        super().__init__()
+        
+        self.setWindowTitle("Notification")
+        layout = QtWidgets.QVBoxLayout()
+        self.setLayout(layout)
+
+        label = QtWidgets.QLabel(message, self)
+        layout.addWidget(label)
+
+        ok_button = QtWidgets.QPushButton("OK", self)
+        ok_button.clicked.connect(self.accept)
+        layout.addWidget(ok_button)
+
+def show_notification(message):
+    dialog = NotificationDialog(message)
+    dialog.exec_()
