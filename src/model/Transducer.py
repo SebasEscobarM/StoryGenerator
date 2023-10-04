@@ -52,3 +52,23 @@ class Transducer(object):
         nt.add_final_state(chr(n+48))
 
         self.fst = nt
+
+    def replace_name(self, texto):
+        # Definir una expresión regular para encontrar "Pepe" con cualquier puntuación o espacio alrededor
+        name = self.name
+        patron = rf'\b{name}\b'
+
+        cont=True
+            
+        # Iterar a través de las ocurrencias y reemplazarlas con el nombre nuevo
+        while cont:
+            oc=re.search(patron,texto)
+            if oc:
+                inicio, fin = oc.start(), oc.end()
+                nombre = texto[inicio:fin]
+                nombre_nuevo = "".join(list(self.fst.translate(nombre))[0])
+                texto = texto[:inicio] + nombre_nuevo + texto[fin:]
+            else:
+                cont=False
+        
+        return texto
