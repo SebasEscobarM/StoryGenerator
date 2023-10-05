@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from ui.main_window import Ui_MainWindow, NotificationDialog
+from ui.main_window import Ui_MainWindow, NotificationDialog, NounChangeDialog
 from model.Automaton import Automaton
 import random
 from multiprocessing import Pool
@@ -11,22 +11,41 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.nod = automaton
-
+        print(self.nod.names["Protagonista"])
         # Create a dialog to set the user's name
         user_name, ok = QtWidgets.QInputDialog.getText(
-            self, "Personaliza la historia", "Ponle un nombre al protagonista (¡O usa el nombre por defecto!):"
+            self, "Personaliza la historia", "¡Ponle un nombre al protagonista!\n (O usa el nombre por defecto):"
         )   
         if ok:
-             self.nod.modify_name("Protagonista", user_name.capitalize())
-             print(user_name) 
+             if(user_name != ""):
+                self.nod.modify_name("Protagonista", user_name.capitalize())
 
         self.ui.confirmationButton.clicked.connect(self.handle_confirmation)
-        self.ui.menuOptions.addAction("Personalizar nombres en la historia", self.custom_story_subjects)
+        self.ui.menuOptions.addAction("Personalizar nombres en la historia", self.show_noun_change_dialog)
 
-        self.load_info(list(self.nod.to_dict().keys())[0] )
+        self.load_info(list(self.nod.to_dict().keys())[0])
 
-    def custom_story_subjects(self):
-        print("funciona")
+    def show_noun_change_dialog(self):
+        index_of_current_state = self.nod.get_index_of_state(self.ui.get_current_state())
+        def update_text_field():
+            dialog.set_text_value(dialog.noun_selection.currentText(), self.nod.names)
+        dialog = NounChangeDialog(self) 
+        dialog.set_up_selections(self.nod.names.keys())
+        dialog.noun_selection.currentTextChanged.connect(update_text_field)
+        dialog.set_text_value(dialog.noun_selection.currentText(), self.nod.names)
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            selected_noun = dialog.noun_selection.currentText()
+            new_noun_name = dialog.new_noun_name_input.text()
+            self.nod.modify_name(selected_noun, new_noun_name.capitalize())
+            self.update_text_fields(self.nod.states[index_of_current_state])
+    
+    def update_text_fields(self, current_state):
+        nod_dict = self.nod.to_dict()   
+        self.ui.set_current_state(current_state.value)
+        node_options = nod_dict[current_state]
+        options_to_show = [option.value.replace("_"," ") for option in list(node_options.keys())]
+        self.ui.set_label_A(options_to_show[0])
+        self.ui.set_label_B(options_to_show[1])
 
     def handle_confirmation(self):
         nod_dict = self.nod.to_dict()
@@ -38,7 +57,7 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
         
         if choice is None:
             self.ui.set_answer("")
-            noti = NotificationDialog("Opción no válida!")
+            noti = NotificationDialog("!Alerta! opción no válida")
             noti.exec_()
         else:
             current_state = node_options[choice.value] #siguiente nodo

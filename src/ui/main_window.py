@@ -12,8 +12,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import requests
 from io import BytesIO
 
-
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -99,7 +97,6 @@ class Ui_MainWindow(object):
         self.confirmationButton.setText(_translate("MainWindow", "Confirmar"))
         self.menuOptions.setTitle(_translate("MainWindow", "Options"))
 
-
     def set_label_A(self, text):
         self.label_A.setText(text)
     
@@ -163,44 +160,44 @@ def show_notification(message):
     dialog.exec_()
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(692, 469)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.Title = QtWidgets.QLabel(self.centralwidget)
-        self.Title.setGeometry(QtCore.QRect(270, 10, 141, 41))
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        self.Title.setFont(font)
-        self.Title.setObjectName("Title")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(80, 60, 151, 16))
-        self.label_2.setObjectName("label_2")
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(290, 380, 101, 41))
-        self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.pushButton.setObjectName("pushButton")
-        self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(420, 60, 151, 16))
-        self.label_3.setObjectName("label_3")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 692, 21))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+class NounChangeDialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Change Nouns")
+        self.initUI()
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    def initUI(self):
+        layout = QtWidgets.QVBoxLayout()
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Custom Names"))
-        self.Title.setText(_translate("MainWindow", "Personaliza la historia"))
-        self.label_2.setText(_translate("MainWindow", "¿Qué nombre deseas cambiar?"))
-        self.pushButton.setText(_translate("MainWindow", "Confirmar"))
-        self.label_3.setText(_translate("MainWindow", "Cambia los valores a tu gusto"))
+        # Add a ComboBox for noun selection
+        self.noun_selection = QtWidgets.QComboBox(self)
+        
+        # Add more items for other nouns as needed
+        layout.addWidget(self.noun_selection)
+        
+        # Add an input field for the new noun name
+        self.new_noun_name_input = QtWidgets.QLineEdit(self)
+        self.new_noun_name_input.setPlaceholderText("Nuevo nombre")
+        layout.addWidget(self.new_noun_name_input)
+
+        # Create Save and Cancel buttons
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Save | QtWidgets.QDialogButtonBox.Cancel, self)
+        button_box.accepted.connect(self.save_changes)
+        button_box.rejected.connect(self.reject)
+        layout.addWidget(button_box)
+
+        self.setLayout(layout)
+
+    def set_up_selections(self, names):
+        for pk in names:
+            self.noun_selection.addItem(pk)
+    
+    def set_text_value(self, current, names_dict):
+        self.new_noun_name_input.setText(names_dict[current])
+
+    def save_changes(self):
+        # Retrieve values from ComboBox and input field
+        selected_noun = self.noun_selection.currentText()
+        new_noun_name = self.new_noun_name_input.text()
+        # Update the story with the selected noun and new name
+        self.accept()

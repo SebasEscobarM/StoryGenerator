@@ -46,6 +46,9 @@ class Automaton(object):
         for pk in self.states:
             if pk.value == state_name:
                 return pk
+    def get_index_of_state(self, state_name):
+        state = self.get_state(state_name)
+        return self.states.index(state)
 
     def set_regular_expressions(self):
         nod_dict = self.to_dict()
