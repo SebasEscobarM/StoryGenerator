@@ -13,6 +13,7 @@ import requests
 from io import BytesIO
 
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -98,6 +99,7 @@ class Ui_MainWindow(object):
         self.confirmationButton.setText(_translate("MainWindow", "Confirmar"))
         self.menuOptions.setTitle(_translate("MainWindow", "Options"))
 
+
     def set_label_A(self, text):
         self.label_A.setText(text)
     
@@ -159,3 +161,46 @@ class NotificationDialog(QtWidgets.QDialog):
 def show_notification(message):
     dialog = NotificationDialog(message)
     dialog.exec_()
+
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(692, 469)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.Title = QtWidgets.QLabel(self.centralwidget)
+        self.Title.setGeometry(QtCore.QRect(270, 10, 141, 41))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.Title.setFont(font)
+        self.Title.setObjectName("Title")
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(80, 60, 151, 16))
+        self.label_2.setObjectName("label_2")
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(290, 380, 101, 41))
+        self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton.setObjectName("pushButton")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(420, 60, 151, 16))
+        self.label_3.setObjectName("label_3")
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 692, 21))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Custom Names"))
+        self.Title.setText(_translate("MainWindow", "Personaliza la historia"))
+        self.label_2.setText(_translate("MainWindow", "¿Qué nombre deseas cambiar?"))
+        self.pushButton.setText(_translate("MainWindow", "Confirmar"))
+        self.label_3.setText(_translate("MainWindow", "Cambia los valores a tu gusto"))

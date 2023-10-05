@@ -21,8 +21,12 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
              print(user_name) 
 
         self.ui.confirmationButton.clicked.connect(self.handle_confirmation)
+        self.ui.menuOptions.addAction("Personalizar nombres en la historia", self.custom_story_subjects)
 
         self.load_info(list(self.nod.to_dict().keys())[0] )
+
+    def custom_story_subjects(self):
+        print("funciona")
 
     def handle_confirmation(self):
         nod_dict = self.nod.to_dict()
