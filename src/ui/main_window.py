@@ -13,7 +13,6 @@ import requests
 from io import BytesIO
 
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -22,7 +21,6 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-
         self.photoA = QtWidgets.QLabel(self.centralwidget)
         self.photoA.setGeometry(QtCore.QRect(75, 40, 221, 221))
         self.photoA.setText("")
@@ -30,8 +28,7 @@ class Ui_MainWindow(object):
         self.photoA.setScaledContents(True)
         self.photoA.setObjectName("photoA")
 
-
-        #photoB
+        # photoB
         self.photoB = QtWidgets.QLabel(self.centralwidget)
         self.photoB.setGeometry(QtCore.QRect(395, 40, 221, 221))
         self.photoB.setText("")
@@ -68,13 +65,12 @@ class Ui_MainWindow(object):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
 
-        #Confirmation Button
+        # Confirmation Button
         self.confirmationButton = QtWidgets.QPushButton(self.centralwidget)
         self.confirmationButton.setGeometry(QtCore.QRect(294, 380, 111, 41))
         self.confirmationButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.confirmationButton.setObjectName("confirmationButton")
 
-        
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 692, 21))
@@ -99,10 +95,9 @@ class Ui_MainWindow(object):
         self.confirmationButton.setText(_translate("MainWindow", "Confirmar"))
         self.menuOptions.setTitle(_translate("MainWindow", "Options"))
 
-
     def set_label_A(self, text):
         self.label_A.setText(text)
-    
+
     def set_label_B(self, text):
         self.label_B.setText(text)
 
@@ -114,16 +109,16 @@ class Ui_MainWindow(object):
 
     def get_answer(self):
         return self.textEdit.toPlainText()
-    
+
     def set_answer(self, text):
         self.textEdit.setPlainText(text)
-    
+
     def set_current_state(self, text):
         self.label.setText(text)
-    
+
     def get_current_state(self):
         return self.label.text()
-    
+
     def set_photo_A(self, image_url):
         response = requests.get(image_url)
         image_data = BytesIO(response.content)
@@ -141,12 +136,10 @@ class Ui_MainWindow(object):
         self.photoB.setPixmap(pixmap)
 
 
-    
-
 class NotificationDialog(QtWidgets.QDialog):
     def __init__(self, message):
         super().__init__()
-        
+
         self.setWindowTitle("Notification")
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
@@ -157,6 +150,7 @@ class NotificationDialog(QtWidgets.QDialog):
         ok_button = QtWidgets.QPushButton("OK", self)
         ok_button.clicked.connect(self.accept)
         layout.addWidget(ok_button)
+
 
 def show_notification(message):
     dialog = NotificationDialog(message)
