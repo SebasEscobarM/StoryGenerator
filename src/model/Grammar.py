@@ -1,9 +1,9 @@
 from pyformlang.finite_automaton import DeterministicFiniteAutomaton as DFA, State as st
-from pyformlang import CFG
+from pyformlang.cfg import CFG
 import random as rd
 
 class Grammar(object):
-    
+
     def __init__(self):
             self.automaton = self.init_automaton()
             self.grammar = self.init_grammar()
