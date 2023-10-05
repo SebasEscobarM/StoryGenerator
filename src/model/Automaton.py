@@ -161,12 +161,9 @@ class Automaton(object):
         return final_states
 
     def modify_name(self, subject, new_name):
-        current_name = self.names[subject]
-        fst = FST(current_name)
-        fst.change_transducer(new_name)
-        translated_name = fst.translate(current_name)
-        if translated_name is not None:
-            self.names[subject] = translated_name
+        """
+        modify method implementation here
+        """
         self.states = self.set_up_states()
         self.final_states = self.set_up_final_states()
         self.automaton = self.set_up_automaton()
