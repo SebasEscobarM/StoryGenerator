@@ -13,8 +13,12 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.nod = automaton
         self.grammar = grammar
-        self.decisions = []
-        self.path = []
+        self.states = []
+        self.path = grammar.generate_rd_story()
+
+        self.path = self.get_story_from_path(self.path)
+
+        print(self.get_urls())
 
         print(self.nod.names["Protagonista"])
         # Create a dialog to set the user's name
@@ -26,17 +30,50 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
              if(user_name != ""):
                 self.nod.modify_name("Protagonista", user_name.capitalize())
 
-        
-        user_name, ok = QtWidgets.QInputDialog.getText(
-
-            self, "Personaliza la historia", "¡Ponle un nombre al protagonista!\n (O usa el nombre por defecto):"
-        )   
         self.ui.confirmationButton.clicked.connect(self.handle_confirmation)
         self.ui.menuOptions.addAction("Personalizar nombres en la historia", self.show_noun_change_dialog)
 
         self.load_info(list(self.nod.to_dict().keys())[0])
 
+    def set_up_full_story(self, story):
+        self.ui = Pruebita()
+        self.ui.setupUi(self)
+        self.ui.add_elements(story, self.get_urls())
 
+    def get_urls(self):
+        urls = []
+        for i in range(len(self.path)):
+            current_state_index = self.states[i]+1
+            if i != (len(self.path)-1):
+                if(self.path[i] == "a"):
+                    urls.append (f"https://github.com/Juank114Gonzalez/TI1-CyED3-Imgs/blob/master/Punto%20{current_state_index}/a/{random.randint(1,4)}.jpg?raw=true")
+                else:
+                    urls.append (f"https://github.com/Juank114Gonzalez/TI1-CyED3-Imgs/blob/master/Punto%20{current_state_index}/b/{random.randint(1,4)}.jpg?raw=true")
+            else:
+                urls.append (f"https://github.com/Juank114Gonzalez/TI1-CyED3-Imgs/blob/master/Fin%20{current_state_index}/{random.randint(1,4)}.jpg?raw=true")
+        
+        return urls
+    
+    def get_story_from_path(self, path):
+        decisions = []
+        nod_dict = self.nod.to_dict()
+        current_state = list(nod_dict.keys())[0]
+        
+        answer = None
+        for char in path:
+            self.states.append(self.nod.get_index_of_state(current_state.value))
+            if char == "a":
+                answer = list(nod_dict[current_state].keys())[0]
+                decisions.append(answer)
+            else:
+                answer = list(nod_dict[current_state].keys())[1]
+                decisions.append(answer)
+            node_options = nod_dict[current_state]
+            current_state = node_options[answer]
+        
+        decisions.append(current_state.value)
+        self.states.append(self.nod.get_index_of_final_state(current_state.value))
+        return decisions
 
     def show_noun_change_dialog(self):
         print("desde cambio de nombre: ", self.ui.get_current_state())
@@ -77,20 +114,17 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
             current_state = node_options[choice.value]  # siguiente nodo
             
             if self.nod.is_final_state(current_state):
-                self.decisions.append(self.nod.get_index_of_final_state(current_state.value))
-                print(self.decisions)
-                print(self.path)
-                self.ui = Pruebita()
-                self.ui.setupUi(self)
+                self.states.append(self.nod.get_index_of_final_state(current_state.value))
+                self.set_up_full_story(self.get_story_from_path(self.path))
             else:
-                self.decisions.append(self.nod.get_index_of_state(current_state.value))
+                self.states.append(self.nod.get_index_of_state(current_state.value))
                 self.load_info(current_state)
 
     def load_info(self, current_state):
         if not self.nod.is_final_state(current_state):
             url_A, url_B = self.get_img_url(self.nod.states.index(current_state) + 1)
-            self.ui.set_photo_A(url_A)
-            self.ui.set_photo_B(url_B)
+            #self.ui.set_photo_A(url_A)
+            #self.ui.set_photo_B(url_B)
             self.ui.set_answer("")
             nod_dict = self.nod.to_dict()
             self.ui.set_current_state(current_state.value)
@@ -109,7 +143,9 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
         for option in options:
             if regex[option].match(response): #esta es la respuesta del usuario (N=0 o n=1)
                 if(n == 0):
-                    self.path.append("a" if n==0 else "b")
+                    self.path += "a"
+                else:
+                    self.path += "b"
                 print("Has escogido ", option.value.replace("_", " "))
                 return option
             n = n+1

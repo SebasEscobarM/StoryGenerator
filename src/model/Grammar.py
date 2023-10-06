@@ -145,7 +145,3 @@ class Grammar(object):
         nod.add_final_state(qf6)
 
         return nod
-    
-
-g = Grammar()
-print(g.generate_rd_story())

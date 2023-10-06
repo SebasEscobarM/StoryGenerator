@@ -198,6 +198,8 @@ class NounChangeDialog(QtWidgets.QDialog):
         # Update the story with the selected noun and new name
         self.accept()
 
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QScrollArea
 
 
 class Pruebita(object):
@@ -205,79 +207,39 @@ class Pruebita(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(692, 469)
         MainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
+ 
+          # Create a scroll area
+        self.scrollArea = QtWidgets.QScrollArea(MainWindow)
+        self.scrollArea.setGeometry(QtCore.QRect(0, 0, 692, 469))
+        self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setWidgetResizable(True)
+        
+        # Create a container widget for the central widget
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 692, 469))
+        
+        # Set your existing central widget as the content of the scroll area
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
-        self.photoA = QtWidgets.QLabel(self.centralwidget)
-        self.photoA.setGeometry(QtCore.QRect(75, 40, 221, 221))
-        self.photoA.setText("")
 
-        self.photoA.setScaledContents(True)
-        self.photoA.setObjectName("photoA")
-
-        # photoB
-        self.photoB = QtWidgets.QLabel(self.centralwidget)
-        self.photoB.setGeometry(QtCore.QRect(395, 40, 221, 221))
-        self.photoB.setText("")
-
-        self.photoB.setScaledContents(True)
-        self.photoB.setObjectName("photoB")
-        self.label_A = QtWidgets.QLabel(self.centralwidget)
-        self.label_A.setGeometry(QtCore.QRect(40, 280, 291, 31))
-        self.label_A.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.label_A.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.label_A.setObjectName("label_A")
-        self.label_B = QtWidgets.QLabel(self.centralwidget)
-        self.label_B.setGeometry(QtCore.QRect(360, 280, 291, 31))
-        self.label_B.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.label_B.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.label_B.setMidLineWidth(0)
-        self.label_B.setObjectName("label_B")
-        self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
-        self.textEdit.setGeometry(QtCore.QRect(230, 330, 241, 41))
-        self.textEdit.setToolTip("")
-        self.textEdit.setAccessibleName("")
-        self.textEdit.setAccessibleDescription("")
-        self.textEdit.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.textEdit.setObjectName("textEdit")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(40, 10, 611, 20))
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label.setFont(font)
-        self.label.setAutoFillBackground(False)
-        self.label.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setObjectName("label")
-
-        # Confirmation Button
-        self.confirmationButton = QtWidgets.QPushButton(self.centralwidget)
-        self.confirmationButton.setGeometry(QtCore.QRect(294, 380, 111, 41))
-        self.confirmationButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.confirmationButton.setObjectName("confirmationButton")
-
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 692, 21))
-        self.menubar.setObjectName("menubar")
-        self.menuOptions = QtWidgets.QMenu(self.menubar)
-        self.menuOptions.setObjectName("menuOptions")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.menuOptions.menuAction())
+        MainWindow.setCentralWidget(self.scrollArea)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        
+    def add_elements(self, story, urls):
+         # Create a QVBoxLayout for the content widget
+        content_layout = QVBoxLayout(self.scrollAreaWidgetContents)
+
+        # Create and add labels to the content layout in a loop
+        for i in range(len(story)):
+            label = QLabel(urls[i])
+            content_layout.addWidget(label)
+            
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Se supone que sirve"))
-        self.label_A.setText(_translate("MainWindow", "Option A text of the story"))
-        self.label_B.setText(_translate("MainWindow", "Option B text of the story"))
-        self.label.setText(_translate("MainWindow", "State Name"))
-        self.confirmationButton.setText(_translate("MainWindow", "Confirmar"))
-        self.menuOptions.setTitle(_translate("MainWindow", "Options"))
+    

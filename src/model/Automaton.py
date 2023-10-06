@@ -83,7 +83,7 @@ class Automaton(object):
             re.compile(r".*(cavar|x|arena).*", re.IGNORECASE),
             re.compile(r".*(inspeccionar|antes).*", re.IGNORECASE),
             re.compile(r".*(huir|cueva).*", re.IGNORECASE),
-            re.compile(r".*(comunicar|criatura).*", re.IGNORECASE),
+            re.compile(r".*(intentar|comunicar|criatura).*", re.IGNORECASE),
             re.compile(r".*(quedar|solo).*", re.IGNORECASE),
             re.compile(r".*(cofre|llevar|ambos).*", re.IGNORECASE),
             re.compile(r".*(intentar|negociar|jefa).*", re.IGNORECASE),
@@ -163,7 +163,7 @@ class Automaton(object):
                 f"Alianza inusual: {self.names['Protagonista']} Establece una comunicación inusual con {self.names['Criatura']} y logra salir de la isla en compañía de {self.names['Criatura']}"
             ),
             st(
-                f"Ataque inesperado: {self.names['Protagonista']} es emboscado, atacado y asesinado por los nativos hostiles"
+                f"Ataque inesperado: {self.names['Protagonista']} es emboscado, atacado y asesinado por los nativos hostiles"
             ),
         ]:
             final_states.append(fn)
