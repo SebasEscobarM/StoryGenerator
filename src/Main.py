@@ -1,17 +1,21 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from ui.main_window import Ui_MainWindow, NotificationDialog, NounChangeDialog
+from ui.main_window import Ui_MainWindow, NotificationDialog, NounChangeDialog, Pruebita
 from model.Automaton import Automaton
+from model.Grammar import Grammar
 import random
-from multiprocessing import Pool
 
 
 class HistoryGeneratorApp(QtWidgets.QMainWindow):
-    def __init__(self, automaton):
+    def __init__(self, automaton, grammar):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.nod = automaton
+        self.grammar = grammar
+        self.decisions = []
+        self.path = []
+
         print(self.nod.names["Protagonista"])
         # Create a dialog to set the user's name
         user_name, ok = QtWidgets.QInputDialog.getText(
@@ -22,19 +26,26 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
              if(user_name != ""):
                 self.nod.modify_name("Protagonista", user_name.capitalize())
 
+        
+        user_name, ok = QtWidgets.QInputDialog.getText(
+
+            self, "Personaliza la historia", "¡Ponle un nombre al protagonista!\n (O usa el nombre por defecto):"
+        )   
         self.ui.confirmationButton.clicked.connect(self.handle_confirmation)
         self.ui.menuOptions.addAction("Personalizar nombres en la historia", self.show_noun_change_dialog)
 
-
         self.load_info(list(self.nod.to_dict().keys())[0])
 
+
+
     def show_noun_change_dialog(self):
+        print("desde cambio de nombre: ", self.ui.get_current_state())
         index_of_current_state = self.nod.get_index_of_state(self.ui.get_current_state())
         def update_text_field():
             dialog.set_text_value(dialog.noun_selection.currentText(), self.nod.names)
         dialog = NounChangeDialog(self) 
         dialog.set_up_selections(self.nod.names.keys())
-        dialog.noun_selection.currentTextChanged.connect(update_text_field)
+        dialog.noun_selection.currentTextChanged.connect(update_text_field) #verificar si hay cambios en la Combo Box
         dialog.set_text_value(dialog.noun_selection.currentText(), self.nod.names)
         if dialog.exec_() == QtWidgets.QDialog.Accepted:
             selected_noun = dialog.noun_selection.currentText()
@@ -60,13 +71,19 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
 
         if choice is None:
             self.ui.set_answer("")
-            noti = NotificationDialog("!Alerta! opción no válida")
+            noti = NotificationDialog("!Atención! opción no válida")
             noti.exec_()
         else:
             current_state = node_options[choice.value]  # siguiente nodo
+            
             if self.nod.is_final_state(current_state):
-                print(current_state)
+                self.decisions.append(self.nod.get_index_of_final_state(current_state.value))
+                print(self.decisions)
+                print(self.path)
+                self.ui = Pruebita()
+                self.ui.setupUi(self)
             else:
+                self.decisions.append(self.nod.get_index_of_state(current_state.value))
                 self.load_info(current_state)
 
     def load_info(self, current_state):
@@ -85,14 +102,17 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
             self.ui.set_label_A(options_to_show[0])
             self.ui.set_label_B(options_to_show[1])
 
+
     def verify_answer(self, response, options):
         regex = self.nod.regular_expressions
+        n = 0
         for option in options:
-            print(option)
-            print(regex[option])
-            if regex[option].match(response):
+            if regex[option].match(response): #esta es la respuesta del usuario (N=0 o n=1)
+                if(n == 0):
+                    self.path.append("a" if n==0 else "b")
                 print("Has escogido ", option.value.replace("_", " "))
                 return option
+            n = n+1
         return None
 
     def get_img_url(self, current_state_index):
@@ -105,6 +125,7 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     automaton = Automaton()
-    window = HistoryGeneratorApp(automaton)
+    grammar = Grammar()
+    window = HistoryGeneratorApp(automaton, grammar)
     window.show()
     sys.exit(app.exec_())

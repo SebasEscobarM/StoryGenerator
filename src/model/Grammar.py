@@ -2,6 +2,7 @@ from pyformlang.finite_automaton import DeterministicFiniteAutomaton as DFA, Sta
 from pyformlang.cfg import CFG
 import random as rd
 
+
 class Grammar(object):
 
     def __init__(self):
@@ -11,7 +12,7 @@ class Grammar(object):
 
     def generate_rd_story(self):
         lst=self.grammar.get_words(5)
-        li=[]
+        li = []
         for i in lst:
             w=""
             for t in i:
@@ -31,6 +32,7 @@ class Grammar(object):
             A -> a | b
             B -> a | b | epsilon
         """)
+        return stGen
 
 
     def init_automaton(self):
@@ -143,3 +145,7 @@ class Grammar(object):
         nod.add_final_state(qf6)
 
         return nod
+    
+
+g = Grammar()
+print(g.generate_rd_story())
