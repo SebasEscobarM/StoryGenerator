@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import requests
 from io import BytesIO
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -167,17 +168,19 @@ class NounChangeDialog(QtWidgets.QDialog):
 
         # Add a ComboBox for noun selection
         self.noun_selection = QtWidgets.QComboBox(self)
-        
+
         # Add more items for other nouns as needed
         layout.addWidget(self.noun_selection)
-        
+
         # Add an input field for the new noun name
         self.new_noun_name_input = QtWidgets.QLineEdit(self)
         self.new_noun_name_input.setPlaceholderText("Nuevo nombre")
         layout.addWidget(self.new_noun_name_input)
 
         # Create Save and Cancel buttons
-        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Save | QtWidgets.QDialogButtonBox.Cancel, self)
+        button_box = QtWidgets.QDialogButtonBox(
+            QtWidgets.QDialogButtonBox.Save | QtWidgets.QDialogButtonBox.Cancel, self
+        )
         button_box.accepted.connect(self.save_changes)
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
@@ -187,7 +190,7 @@ class NounChangeDialog(QtWidgets.QDialog):
     def set_up_selections(self, names):
         for pk in names:
             self.noun_selection.addItem(pk)
-    
+
     def set_text_value(self, current, names_dict):
         self.new_noun_name_input.setText(names_dict[current])
 
@@ -198,8 +201,16 @@ class NounChangeDialog(QtWidgets.QDialog):
         # Update the story with the selected noun and new name
         self.accept()
 
+
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QScrollArea
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QScrollArea,
+)
 
 
 class Pruebita(object):
@@ -207,39 +218,49 @@ class Pruebita(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(692, 469)
         MainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
- 
-          # Create a scroll area
+
+        # Create a scroll area
         self.scrollArea = QtWidgets.QScrollArea(MainWindow)
         self.scrollArea.setGeometry(QtCore.QRect(0, 0, 692, 469))
         self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.scrollArea.setWidgetResizable(True)
-        
+
         # Create a container widget for the central widget
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 692, 469))
-        
+
         # Set your existing central widget as the content of the scroll area
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-
 
         MainWindow.setCentralWidget(self.scrollArea)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        
+
     def add_elements(self, story, urls):
-         # Create a QVBoxLayout for the content widget
+        # Create a QVBoxLayout for the content widget
         content_layout = QVBoxLayout(self.scrollAreaWidgetContents)
 
         # Create and add labels to the content layout in a loop
         for i in range(len(story)):
-            label = QLabel(urls[i])
+            label = QLabel(story[i])
             content_layout.addWidget(label)
-            
 
+            # Descargar la imagen desde la URL y mostrarla
+            response = requests.get(urls[i])
+            image_data = BytesIO(response.content)
+            pixmap = QtGui.QPixmap()
+            pixmap.loadFromData(image_data.getvalue())
+
+            # Redimensionar la imagen a 512x512
+            pixmap = pixmap.scaled(512, 512)
+
+            # Crear una etiqueta para mostrar la imagen
+            image_label = QLabel()
+            image_label.setPixmap(pixmap)
+            content_layout.addWidget(image_label)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Se supone que sirve"))
-    
