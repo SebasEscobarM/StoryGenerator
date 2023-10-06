@@ -261,6 +261,19 @@ class Pruebita(object):
             image_label.setPixmap(pixmap)
             content_layout.addWidget(image_label)
 
+        # Crear un contenedor horizontal para los botones
+        buttons_layout = QtWidgets.QHBoxLayout()
+
+        # Agregar botones al contenedor horizontal de los botones
+        volver_button = QtWidgets.QPushButton("Volver a jugar")
+        salir_button = QtWidgets.QPushButton("Salir")
+        buttons_layout.addWidget(volver_button)
+        buttons_layout.addWidget(salir_button)
+
+        content_layout.addLayout(buttons_layout)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Se supone que sirve"))
+        MainWindow.setWindowTitle(
+            _translate("MainWindow", "Recopilación de la historia")
+        )

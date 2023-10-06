@@ -9,6 +9,7 @@ import random
 class HistoryGeneratorApp(QtWidgets.QMainWindow):
     def __init__(self, automaton, grammar):
         super().__init__()
+        self.rollback = False
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.nod = automaton
