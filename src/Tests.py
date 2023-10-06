@@ -18,8 +18,18 @@ class SystemUnitTest(unittest.TestCase):
         r3=tr.replace_name("Un dia Pepe iba de camino a su casa tranquilo cuando escucho: ¡Pepe!. Pepe giro la cabeza buscando quien lo llamaba.")
         self.assertEqual(r3,"Un dia Juan Alejandro iba de camino a su casa tranquilo cuando escucho: ¡Juan Alejandro!. Juan Alejandro giro la cabeza buscando quien lo llamaba.")
 
-          
+    def test_grammar(self):
+        gr=Grammar.Grammar()
+        aut=gr.automaton
         
+        w=gr.generate_rd_story()
+        self.assertTrue(aut.accepts(w))
+
+        w1=gr.generate_rd_story()
+        self.assertTrue(aut.accepts(w1))
+
+        w2=gr.generate_rd_story()
+        self.assertTrue(aut.accepts(w2))      
 
 if __name__ == '__main__':
     unittest.main()
