@@ -66,7 +66,7 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
         decisions.append(current_state.value)
         self.states.append(self.nod.get_index_of_final_state(current_state.value))
         urls.append(
-                    f"https://github.com/Juank114Gonzalez/TI1-CyED3-Imgs/blob/master/Fin%20{self.nod.get_index_of_final_state(current_state.value)+1}/{random.randint(1,4)}.jpg?raw=true"
+                    f"assets/images/Fin {self.nod.get_index_of_final_state(current_state.value)+1}/{random.randint(1,4)}.jpg"
                 )
         return decisions, urls
 
@@ -128,8 +128,8 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
     def load_info(self, current_state):
         if not self.nod.is_final_state(current_state):
             url_A, url_B = self.get_img_url(self.nod.states.index(current_state) + 1)
-            # self.ui.set_photo_A(url_A)
-            # self.ui.set_photo_B(url_B)
+            self.ui.set_photo_A(url_A)
+            self.ui.set_photo_B(url_B)
             self.ui.set_answer("")
             nod_dict = self.nod.to_dict()
             self.ui.set_current_state(current_state.value)
@@ -159,12 +159,22 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
 
     def get_img_url(self, current_state_index):
         return (
-            f"https://github.com/Juank114Gonzalez/TI1-CyED3-Imgs/blob/master/Punto%20{current_state_index}/a/{random.randint(1,4)}.jpg?raw=true",
-            f"https://github.com/Juank114Gonzalez/TI1-CyED3-Imgs/blob/master/Punto%20{current_state_index}/b/{random.randint(1,4)}.jpg?raw=true",
+            f"assets/images/Punto {current_state_index}/a/{random.randint(1,4)}.jpg",
+            f"assets/images/Punto {current_state_index}/b/{random.randint(1,4)}.jpg",
         )
 
 
 if __name__ == "__main__":
+    import os
+
+    relative_path = "assets"
+    absolute_path = os.path.abspath(relative_path)
+
+    if os.path.exists(absolute_path):
+        print(f"The path '{absolute_path}' exists.")
+    else:
+        print(f"The path '{absolute_path}' does not exist.")
+
     app = QtWidgets.QApplication(sys.argv)
     automaton = Automaton()
     grammar = Grammar()

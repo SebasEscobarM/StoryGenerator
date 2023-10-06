@@ -37,9 +37,22 @@ class Ui_MainWindow(object):
         self.photoB.setObjectName("photoB")
         self.label_A = QtWidgets.QLabel(self.centralwidget)
         self.label_A.setGeometry(QtCore.QRect(40, 280, 291, 31))
-        self.label_A.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.label_A.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.label_A.setObjectName("label_A")
+
+         # Create a QFont with a monospaced font family
+        font_path = "assets/fonts/prstart.ttf"  # Replace with the actual path to your font file
+        undertale_font = QtGui.QFontDatabase.addApplicationFont(font_path)
+
+        if undertale_font != -1:
+            print("sirve")
+            font_family = QtGui.QFontDatabase.applicationFontFamilies(undertale_font)[0]
+
+            # Create a QFont with the Undertale-like font family
+            undertale_like_font = QtGui.QFont(font_family, 12)  # Adjust the size as needed
+
+            # Set the QFont for the QLabel
+            self.label_A.setFont(undertale_like_font)
+
+
         self.label_B = QtWidgets.QLabel(self.centralwidget)
         self.label_B.setGeometry(QtCore.QRect(360, 280, 291, 31))
         self.label_B.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -120,20 +133,13 @@ class Ui_MainWindow(object):
         return self.label.text()
 
     def set_photo_A(self, image_url):
-        response = requests.get(image_url)
-        image_data = BytesIO(response.content)
-        # Crear un QPixmap desde los datos de la imagen
-        pixmap = QtGui.QPixmap()
-        pixmap.loadFromData(image_data.getvalue())
+        pixmap = QtGui.QPixmap(image_url)
         self.photoA.setPixmap(pixmap)
 
     def set_photo_B(self, image_url):
-        response = requests.get(image_url)
-        image_data = BytesIO(response.content)
-        # Crear un QPixmap desde los datos de la imagen
-        pixmap = QtGui.QPixmap()
-        pixmap.loadFromData(image_data.getvalue())
+        pixmap = QtGui.QPixmap(image_url)
         self.photoB.setPixmap(pixmap)
+
 
 
 class NotificationDialog(QtWidgets.QDialog):
@@ -248,10 +254,7 @@ class Pruebita(object):
             content_layout.addWidget(label)
 
             # Descargar la imagen desde la URL y mostrarla
-            response = requests.get(urls[i])
-            image_data = BytesIO(response.content)
-            pixmap = QtGui.QPixmap()
-            pixmap.loadFromData(image_data.getvalue())
+            pixmap = QtGui.QPixmap(urls[i])
 
             # Redimensionar la imagen a 512x512
             pixmap = pixmap.scaled(512, 512)
