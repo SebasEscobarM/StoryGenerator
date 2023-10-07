@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets
-from ui.main_window import Ui_MainWindow, NotificationDialog, NounChangeDialog, Pruebita, CustomInputDialog
+from ui.main_window import Ui_MainWindow, NotificationDialog, NounChangeDialog, FinalWindow, CustomInputDialog
 from model.Automaton import Automaton
 from model.Grammar import Grammar
 import random
@@ -49,7 +49,7 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
 
     def set_up_full_story(self):
         self.ui.menubar.setVisible(False)
-        self.ui = Pruebita()
+        self.ui = FinalWindow()
         self.ui.setupUi(self)
         story, urls = self.get_story_from_path()
         self.ui.add_elements(story, urls)
@@ -197,11 +197,11 @@ stylesheet = """
         background-position: center;
     }
 
-    HistoryGeneratorApp Pruebita {
+    HistoryGeneratorApp FinalWindow {
         background-color: #000;
     }
 
-    Pruebita {
+    FinalWindow {
         background-color: #000;
     }
 """

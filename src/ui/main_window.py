@@ -299,7 +299,7 @@ from PyQt5.QtWidgets import (
 )
 
 
-class Pruebita(object):
+class FinalWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(692, 469)
@@ -503,7 +503,7 @@ class CustomInputDialog(QtWidgets.QDialog):
         self.text_input.setMinimumHeight(40)
         self.set_up_text_edit(self.text_input)
         self.custom_button = QtWidgets.QPushButton("Escoge tus caminos")
-        self.random_button = QtWidgets.QPushButton("Genera una aleatoria")
+        self.random_button = QtWidgets.QPushButton("Historia aleatoria")
         
 
         self.custom_button.clicked.connect(self.handle_custom)
