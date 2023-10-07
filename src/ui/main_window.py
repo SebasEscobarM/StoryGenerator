@@ -502,7 +502,7 @@ class CustomInputDialog(QtWidgets.QDialog):
         self.text_input.setPlaceholderText("Silvanus es el nombre por defecto")
         self.text_input.setMinimumHeight(40)
         self.set_up_text_edit(self.text_input)
-        self.custom_button = QtWidgets.QPushButton("Personaliza tu historia")
+        self.custom_button = QtWidgets.QPushButton("Escoge tus caminos")
         self.random_button = QtWidgets.QPushButton("Genera una aleatoria")
         
 
