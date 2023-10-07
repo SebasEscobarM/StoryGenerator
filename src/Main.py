@@ -1,12 +1,13 @@
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
-from ui.main_window import Ui_MainWindow, NotificationDialog, NounChangeDialog, Pruebita
+from PyQt5 import QtWidgets
+from ui.main_window import Ui_MainWindow, NotificationDialog, NounChangeDialog, Pruebita, CustomInputDialog
 from model.Automaton import Automaton
 from model.Grammar import Grammar
 import random
 
 
 class HistoryGeneratorApp(QtWidgets.QMainWindow):
+    singleton: 'HistoryGeneratorApp' = None
     def __init__(self, automaton, grammar):
         super().__init__()
         self.rollback = False
@@ -17,30 +18,58 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
         self.states = []
         self.path = ""
 
-
-        print(self.nod.names["Protagonista"])
-        # Create a dialog to set the user's name
-        user_name, ok = QtWidgets.QInputDialog.getText(
-            self,
-            "Personaliza la historia",
-            "¡Ponle un nombre al protagonista!\n (O usa el nombre por defecto):",
-        )
-        if ok:
-            if user_name != "":
-                self.nod.modify_name("Protagonista", user_name.capitalize())
-
         self.ui.confirmationButton.clicked.connect(self.handle_confirmation)
         self.ui.menuOptions.addAction(
             "Personalizar nombres en la historia", self.show_noun_change_dialog
         )
+        self.init_config()
+        self.show()
 
+    def init_config(self):
+        dialog = CustomInputDialog(self)
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            name = dialog.get_name()
+            if(dialog.result == "custom"):
+                self.run_custom_game(name)
+            else:
+                self.run_random_game(name)
+        else:
+            self.load_info(list(self.nod.to_dict().keys())[0])
+        
+    def run_random_game(self, user_name):
+        if user_name != "":
+                self.nod.modify_name("Protagonista", user_name.capitalize())
+        self.path = self.grammar.generate_rd_story()
+        self.set_up_full_story()
+
+    def run_custom_game(self, user_name):
+        if user_name != "":
+                self.nod.modify_name("Protagonista", user_name.capitalize())
         self.load_info(list(self.nod.to_dict().keys())[0])
 
     def set_up_full_story(self):
+        self.ui.menubar.setVisible(False)
         self.ui = Pruebita()
         self.ui.setupUi(self)
         story, urls = self.get_story_from_path()
         self.ui.add_elements(story, urls)
+        self.ui.volver_button.clicked.connect(self.restart)
+        self.ui.salir_button.clicked.connect(self.exit_program)
+
+    def exit_program(self):
+        # Close the current application window
+        self.close()
+    
+    def restart(self):
+        self.close()
+        self.restart_program()
+        
+    @staticmethod
+    def restart_program():
+        automaton = Automaton()
+        grammar = Grammar()
+        HistoryGeneratorApp.singleton = HistoryGeneratorApp(automaton, grammar)
+    
 
     def get_story_from_path(self):
         decisions = []
@@ -71,7 +100,6 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
         return decisions, urls
 
     def show_noun_change_dialog(self):
-        print("desde cambio de nombre: ", self.ui.get_current_state())
         index_of_current_state = self.nod.get_index_of_state(
             self.ui.get_current_state()
         )
@@ -105,13 +133,12 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
         nod_dict = self.nod.to_dict()
         node_options = nod_dict[self.nod.get_state(self.ui.get_current_state())]
         response = self.ui.get_answer()
-        print(response)
         choice = None
         choice = self.verify_answer(response.replace(" ", "_"), node_options)
 
         if choice is None:
             self.ui.set_answer("")
-            noti = NotificationDialog("!Atención! opción no válida")
+            noti = NotificationDialog("!Atención! opción no válida \n recuerda escribir en el recuadro de respuesta")
             noti.exec_()
         else:
             current_state = node_options[choice.value]  # siguiente nodo
@@ -133,7 +160,7 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
             self.ui.set_answer("")
             nod_dict = self.nod.to_dict()
             self.ui.set_current_state(current_state.value)
-            print("------------Escenario---------- \n", current_state)
+            print("[Escena actual] \n", current_state)
             node_options = nod_dict[current_state]
             options_to_show = [
                 option.value.replace("_", " ") for option in list(node_options.keys())
@@ -152,7 +179,7 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
                     self.path += "a"
                 else:
                     self.path += "b"
-                print("Has escogido ", option.value.replace("_", " "))
+                print("------------Has escogido ", option.value.replace("_", " "),"------------")
                 return option
             n = n + 1
         return None
@@ -162,22 +189,25 @@ class HistoryGeneratorApp(QtWidgets.QMainWindow):
             f"assets/images/Punto {current_state_index}/a/{random.randint(1,4)}.jpg",
             f"assets/images/Punto {current_state_index}/b/{random.randint(1,4)}.jpg",
         )
+    
+stylesheet = """
+    HistoryGeneratorApp {
+        background-image: url("assets/images/bg/bg3.png");
+        background-repeat: no-repeat; 
+        background-position: center;
+    }
 
+    HistoryGeneratorApp Pruebita {
+        background-color: #000;
+    }
+
+    Pruebita {
+        background-color: #000;
+    }
+"""
 
 if __name__ == "__main__":
-    import os
-
-    relative_path = "assets"
-    absolute_path = os.path.abspath(relative_path)
-
-    if os.path.exists(absolute_path):
-        print(f"The path '{absolute_path}' exists.")
-    else:
-        print(f"The path '{absolute_path}' does not exist.")
-
     app = QtWidgets.QApplication(sys.argv)
-    automaton = Automaton()
-    grammar = Grammar()
-    window = HistoryGeneratorApp(automaton, grammar)
-    window.show()
+    app.setStyleSheet(stylesheet)
+    HistoryGeneratorApp.restart_program()
     sys.exit(app.exec_())

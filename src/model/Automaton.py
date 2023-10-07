@@ -97,7 +97,7 @@ class Automaton(object):
             re.compile(r".*(buscar|comida).*", re.IGNORECASE),
             re.compile(r".*(entrar|otro).*", re.IGNORECASE),
             re.compile(r".*(acuerdo|beneficio).*", re.IGNORECASE),
-            re.compile(r".*robar.*", re.IGNORECASE),
+            re.compile(r".*(robar|tratar|nativos).*", re.IGNORECASE),
             re.compile(r".*(esconder|embarcación|embarcacion).*", re.IGNORECASE),
             re.compile(r".*(correr|costa|desesperado|escapar).*", re.IGNORECASE),
         ]:
